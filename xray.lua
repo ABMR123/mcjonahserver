@@ -46,15 +46,6 @@ local function clearOverlay()
 end
 
 local function scanAndRender()
-    -- Get absolute world coordinates of the pocket computer/player
-    local pX, pY, pZ = gps.locate()
-    
-    if not pX then
-        print("Error: GPS network not found!")
-        print("World-anchored scanning requires a GPS network.")
-        return
-    end
-
     print("Scanning blocks in radius " .. scanRadius .. "...")
     local blocks, err = geoScanner.scanBlocks(scanRadius)
 
@@ -71,16 +62,15 @@ local function scanAndRender()
             oreCount = oreCount + 1
 
             overlay.createBox({
-                -- Add the player's absolute coordinates to the block's relative coordinates
-                x = pX + block.x,
-                y = pY + block.y,
-                z = pZ + block.z,
+                x = block.x,
+                y = block.y,
+                z = block.z,
                 sizeX = 1,
                 sizeY = 1,
                 sizeZ = 1,
                 color = getOreColor(block.name),
                 opacity = 0.6,
-                relativePosition = false, -- This anchors the box to the world
+                relativePosition = true,
                 depthTest = false,
                 culling = true
             })
